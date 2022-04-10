@@ -17,21 +17,45 @@ contract Crowfunding {
 
 // information sur le financier
 
+//SPDX-License-Identifier: Unlicense
+pragma solidity ^0.8.0;
+import "hardhat/console.sol";
+
+contract Crowfunding {
+
+// information sur la creation du project
+    struct Project {
+        string name;
+        address payable owner;
+        string imageLink;
+        string description;
+        uint256 Amount;
+        uint256 deadline;
+        uint256 currentAmount;
+    }
+
+// information sur le financier
+
     struct Giver {
-        address giverAddr;
+        address payable giverAddr;
         uint256 amount;
     }
 
-    event ProjectEvent(string _name, address _owner, string _imageLink, string _description, uint256 _Amount, uint256 _earn, uint256 _deadline);
+    event ProjectEvent(string _name, address _owner, string _imageLink, string _description, uint256 _Amount, uint256 _deadline);
+    event currentAmountEvent(uint256 _currentAmount);
 
 // list des projets
     Project[] public projects;
+    mapping (address => Project) public StructProject;
     mapping (address => Giver[]) public givers;
 
     constructor() {
-
     }
-// function pour la creation des projects
+
+    function get() public view returns(uint256) {
+        return address(this).balance;
+    }
+//function pour la creation des projects
     function createProject(
         string memory _name,
         string memory _imageLink, 
@@ -40,23 +64,33 @@ contract Crowfunding {
         uint256 _deadline)
         public 
         {
-            require (!ProjectValidator(msg.sender), "impossible de creer plusieur Project");
-            Project memory newProject = Project(_name, msg.sender, _imageLink, _description, _Amount, block.timestamp + (_deadline * 1 days));
-            projects.push(newProject);
-            emit ProjectEvent(_name , msg.sender, _imageLink, _description, _Amount, 0, _deadline);
+            require (StructProject[msg.sender].owner == address(0), "Imposible de creer deux campagnes a la fois");
+            StructProject[msg.sender] = Project(_name, payable(msg.sender), _imageLink, _description, _Amount, block.timestamp + (_deadline * 1 days), 0);
+            projects.push(StructProject[msg.sender]);
+            emit ProjectEvent(_name , msg.sender, _imageLink, _description, _Amount, _deadline);
+            emit currentAmountEvent(0);
         }
+    fallback() external payable {
+
+    }
+    receive() external payable {
+
+    }
     
-    function ProjectValidator(address _owner) private view returns(bool) {
-        for (uint i = 0; i < projects.length; i++)
-            if (projects[i].owner == _owner && block.timestamp < projects[i].deadline)
-                return (true);
-        return (false);
-    }
-// function Donateur
+  
+
     function makeFunding(uint _value, address _ProjectOwer) public {
-        require (ProjectValidator(_ProjectOwer), "delai expirer");
-        require (msg.sender != _ProjectOwer, "Transaction impossible");
-        require (_value > 0, "la somme doit est superieur a zero");
-        givers[_ProjectOwer].push(Giver(msg.sender, _value));
+        require (_value > 0, "somme insufisant");
+        require (msg.sender != _ProjectOwer, "operation impossible");
+        require (block.timestamp < StructProject[_ProjectOwer].deadline, "operation impossible");
+        givers[_ProjectOwer].push(Giver(payable(msg.sender), _value));
+        StructProject[_ProjectOwer].currentAmount += _value;
+        emit currentAmountEvent(StructProject[_ProjectOwer].currentAmount);
     }
+
+function payOwnerProject() external payable {
+    require (StructProject[msg.sender].Amount <= StructProject[msg.sender].currentAmount, "objectif non atteint");
+    uint payValue= StructProject[msg.sender].currentAmount;
+    payable(msg.sender).transfer(payValue * 10**18);
+   }
 }
