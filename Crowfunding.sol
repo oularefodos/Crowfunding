@@ -3,6 +3,29 @@
 pragma solidity ^0.8.0;
 import "hardhat/console.sol";
 
+contract MyWallet {
+    mapping (address => uint256) private balance;
+
+    fallback() external payable {
+
+    }
+
+    receive() external payable {
+        balance[msg.sender] += msg.value; 
+    }
+    
+    function transferEthers(uint256 _value, address _to) external {
+        require (balance[msg.sender] >= _value * 10**18, "solde insufisant");
+        balance[msg.sender] -= _value * 10**18;
+        balance[_to] += _value * 10**18;
+    }
+
+    function transferOut(uint256 _value) external payable {
+        require (balance[msg.sender] >= _value * 10**18, "solde insufisant");
+        payable(msg.sender).transfer(_value);
+    }
+}
+
 contract Crowfunding {
 
 // information sur la creation du project
