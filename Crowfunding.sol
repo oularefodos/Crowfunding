@@ -25,8 +25,16 @@ contract Crowfunding {
         uint256 amount;
     }
 // les evenemnts
-    event ProjectEvent(string _name, address _owner, string _imageLink, string _description, uint256 _Amount, uint256 _deadline);
+    event ProjectEvent(
+        string _name, 
+        address _owner, 
+        string _imageLink, 
+        string _description, 
+        uint256 _Amount, 
+        uint256 _deadline);
+    
     event currentAmountEvent(uint256 _currentAmount);
+
     event isDoneEvent(bool isDone);
 
 // list des projets
@@ -57,8 +65,15 @@ contract Crowfunding {
     receive() external payable {
         balance[msg.sender] += msg.value;
     }
+
+    function exist(address _addr) public view returns(bool) {
+        if (StructProject[_addr].owner == address(0))
+            return (false);
+        else
+            return (true);
+     }
 //function pour la creation des projects
-    function createProject(
+    function createCampaign(
         string memory _name,
         string memory _imageLink, 
         string memory _description, 
@@ -66,7 +81,7 @@ contract Crowfunding {
         uint256 _deadline)
         public 
         {
-            require (StructProject[msg.sender].owner == address(0), "impossible de faire une autre demande");
+            require (!exist(msg.sender), "vous avez deja creer un projet");
             StructProject[msg.sender] = Project(false, _name, n, payable(msg.sender), _imageLink, _description, _Amount * 10**18, block.timestamp + (_deadline * 1 days), 0);
             projects.push(StructProject[msg.sender]);
             n++;
@@ -90,7 +105,7 @@ contract Crowfunding {
           emit isDoneEvent(true);
     }
 // faire un don
-    function makeFunding(uint _value, address _ProjectOwer) public {
+    function donate(uint _value, address _ProjectOwer) public {
         require (_value > 0, "tranfert impossible");
         require (balance[msg.sender] > _value * 10**18, "somme insufisant");
         require (msg.sender != _ProjectOwer, "operation impossible");
@@ -108,8 +123,9 @@ contract Crowfunding {
         require (StructProject[msg.sender].owner != address(0), "impossible de faire une autre demande");
         require (ft_isDone(msg.sender), "Pas encore fini");
         require (StructProject[msg.sender].currentAmount > 0, "transfert impossible");
-        balance[msg.sender] += StructProject[msg.sender].currentAmount;
+        uint256 currentAmount = StructProject[msg.sender].currentAmount;
         StructProject[msg.sender].currentAmount = 0;
+        balance[msg.sender] += currentAmount;
     }
 
     function payOut(uint256 _value) external payable {
