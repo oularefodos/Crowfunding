@@ -36,9 +36,10 @@ contract Crowfunding {
     event currentAmountEvent(uint256 _currentAmount);
 
     event isDoneEvent(bool isDone);
+    event depositEvent(uint balance);
 
 // list des projets
-    Project[] public projects;
+    Project[] projects;
     address private Owner;
     uint256 n;
     mapping (address => Project) public StructProject;
@@ -58,12 +59,18 @@ contract Crowfunding {
         return balance[msg.sender];
     }
 
+
+    function getAllCompagn() external view returns (Project[] memory) {
+        return projects;
+    }
+
     fallback() external payable {
 
     }
 
     receive() external payable {
         balance[msg.sender] += msg.value;
+        emit depositEvent(balance[msg.sender]);
     }
 
     function exist(address _addr) public view returns(bool) {
@@ -117,6 +124,7 @@ contract Crowfunding {
         if (StructProject[_ProjectOwer].currentAmount >= StructProject[_ProjectOwer].Amount)
             putDone(_ProjectOwer);
         emit currentAmountEvent(StructProject[_ProjectOwer].currentAmount);
+        emit depositEvent(balance[msg.sender]);
     }
 // faire un virement dans son portfeuil
     function payOwnerProject() external {
@@ -126,6 +134,7 @@ contract Crowfunding {
         uint256 currentAmount = StructProject[msg.sender].currentAmount;
         StructProject[msg.sender].currentAmount = 0;
         balance[msg.sender] += currentAmount;
+        emit depositEvent(balance[msg.sender]);
     }
 
     function payOut(uint256 _value) external payable {
@@ -133,5 +142,6 @@ contract Crowfunding {
         require (_value > 0, "tranfert impossible");
         balance[msg.sender] -= _value * 10**18;
         payable(msg.sender).transfer(_value * 10**18);
+        emit depositEvent(balance[msg.sender]);
     }
 }
