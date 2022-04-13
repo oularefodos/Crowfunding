@@ -36,7 +36,7 @@ const Home = () => {
             const provider = new ethers.providers.Web3Provider(window.ethereum);
             const signer = provider.getSigner();
             const contract = new ethers.Contract(ContractAddress, abi, signer);
-            const amount = BigNumber.from(Amount).mul(BigNumber.from(10).pow(18));
+            const amount = ethers.utils.parseUnits(Amount, 18)
             console.log(typeof(amount))
             const ret = await contract.donate(amount, address);
             await ret.wait;

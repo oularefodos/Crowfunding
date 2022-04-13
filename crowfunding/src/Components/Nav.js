@@ -12,6 +12,7 @@ const Nav = () => {
     const contextValue = useContext(ContractContext)
     const {UserAddress, setUserAddress} = contextValue;
     const [balance, setBalance] = useState();
+
     const connect = async() => {
         if (UserAddress === "")
         {
@@ -20,7 +21,9 @@ const Nav = () => {
             const provider = new ethers.providers.Web3Provider(window.ethereum);
             await provider.send("eth_requestAccounts", []);
             const signer = provider.getSigner();
-            setUserAddress(await signer.getAddress());
+            const addr = await signer.getAddress()
+            setUserAddress(addr);
+            localStorage.setItem('Name', addr);
             const contract = new ethers.Contract(ContractAddress, abi, signer);
             const value = await contract.getBalance();
             await value.wait;
@@ -29,14 +32,18 @@ const Nav = () => {
           }
         }
         else
-          setUserAddress("");
+        {
+          setUserAddress('');
+          localStorage.setItem('Name', '')
+        }
       }
+      
     return (
     <div className="nav">
         <div className="navigation">
         <NavLink to="/Compagn" className="link">Create Compagn</NavLink>
         <NavLink to="/" className="link">Home</NavLink>
-        <NavLink to="/MyCompagn" className="link">My Compagn</NavLink>
+        <NavLink to="/Mycount" className="link">My Compagn</NavLink>
         </div>
         <button className="connect" onClick={connect}>{UserAddress === "" ? ("Connect Metamask") : ("disconnect")}</button>
         {

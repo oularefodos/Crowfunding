@@ -14,7 +14,19 @@ body {
   height: 2000px;
   background-color: #575fcf;
 }
-
+.retire {
+  height: 49px;
+  font-style: italic;
+  font-size: 18px;
+  font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+  width: 80%;
+  text-transform: uppercase;
+  margin-top: 1rem;
+  border: white 1px solid;
+  color: black;
+  background-image: linear-gradient(45deg, #cf9757 0%, #0fbcf9  51%, red  100%);
+  border-radius: 6px;
+}
 .navigation {
   text-align: center;
   width: 100%;
@@ -35,10 +47,65 @@ body {
   text-transform: uppercase;
   margin: 1.5rem;
   border: white 1px solid;
-  color: black;
+  color: white;
   background-image: linear-gradient(45deg, #575fcf 0%, #0fbcf9  51%, #0501ff  100%);
   border-radius: 6px;
 }
+
+.wallet {
+  width: 100%;
+  border-radius: 20px;
+  background-color: #c8d6e5;
+  color: black;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+}
+
+.addr {
+  font-size: 20px;
+  margin-top: 1rem;
+  font-family: 'Courier New', Courier, monospace;
+  font-style: oblique;
+}
+
+.addr span {
+  text-transform: uppercase;
+  font-size: 30px;
+}
+
+.profile {
+  width: 100%;
+  margin: 2rem;
+  text-align: center;
+}
+
+.profile button {
+  height: 40px;
+  width: 40%;
+  font-size: x-large;
+  font-family: 'Courier New', Courier, monospace;
+  border-radius: 15px;
+  box-shadow: 10px 5px 5px black;
+  border: none;
+  text-transform: uppercase;
+  background-image: linear-gradient(45deg, #cf9757 0%, #0fbcf9  51%, red  100%);
+}
+
+.balance {
+
+  font-size: 40px;
+  text-transform: uppercase;
+  font-family: 'Courier New', Courier, monospace;
+  font-style: italic;
+  color: black;
+  font-weight: bold;
+}
+
+.profile
 
 /* Formation */
 
@@ -92,9 +159,6 @@ body {
   width: 80%;
 }
 
-.show button {
-  
-}
 
 .overflow-ellipsis {
   text-overflow: ellipsis;

@@ -8,13 +8,14 @@ import Nav from './Components/Nav';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import Home from './Components/Home';
 import Compang from './Components/CreateACompagn';
+import MyCount from './Components/MyCount';
 
 function App() {
 
   const [Provider, setProvider] = useState();
   const [Contract, setContrcat] = useState();
   const [data, setData] = useState([]);
-  const [UserAddress, setUserAddress] = useState("");
+  const [UserAddress, setUserAddress] = useState(localStorage.Name);
 
 
 
@@ -45,6 +46,7 @@ function App() {
         <Routes>
           <Route path="/" element={<Home/>}></Route>
           <Route path="/Compagn" element={<Compang/>}></Route>
+          <Route path="/Mycount" element={<MyCount/>}></Route>
         </Routes>
         </BrowserRouter>
       </div>

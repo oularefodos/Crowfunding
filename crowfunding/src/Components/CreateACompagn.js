@@ -8,7 +8,7 @@ const Compang = () => {
 
     const [name, setName] = useState('');
     const [Amount, setAmount] = useState(0);
-    const [deadline, setDeadline] = useState(0);
+    const [deadline, setDeadline] = useState('');
     const [email, setEmail] = useState('');
     const [des, setDes] = useState('');
     const ContextValue = useContext(ContractContext)
@@ -17,9 +17,9 @@ const Compang = () => {
 
     const HandleChange = (value, n) => {
         if (isNaN(value))
-            alert ("erreur");
+            alert ("erreur il faut un entier");
         else if (n)
-            setAmount (parseInt(value))
+            setAmount (value)
         else if (!n)
             setDeadline (parseInt(value))
     }
@@ -32,7 +32,8 @@ const Compang = () => {
         {
             const signer = Provider.getSigner();
             const contract = new ethers.Contract(ContractAddress, abi, signer);
-            const ret = await contract.createCampaign(name, email, des, Amount, deadline)
+            const amount = ethers.utils.parseUnits(Amount, 18);
+            const ret = await contract.createCampaign(name, email, des, amount, deadline)
             await ret.wait;
         }
     }
