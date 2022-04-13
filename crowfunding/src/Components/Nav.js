@@ -5,6 +5,8 @@ import abi from "../Artifact/Abi";
 import ContractAddress from "../Artifact/ContractAddress";
 import { useState } from "react";
 import ContractContext from "../Context/ContractContext";
+
+
 const Nav = () => {
 
     const contextValue = useContext(ContractContext)
