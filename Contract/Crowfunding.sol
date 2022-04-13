@@ -91,7 +91,7 @@ contract Crowfunding {
         public 
         {
             require (!exist(msg.sender), "vous avez deja creer un projet");
-            StructProject[msg.sender] = Project(false, _name, n, payable(msg.sender), _imageLink, _description, _Amount * 10**18, block.timestamp + (_deadline * 1 days), 0);
+            StructProject[msg.sender] = Project(false, _name, n, payable(msg.sender), _imageLink, _description, _Amount, block.timestamp + (_deadline * 1 days), 0);
             projects.push(StructProject[msg.sender]);
             n++;
             emit ProjectEvent(_name , msg.sender, _imageLink, _description, _Amount, _deadline);
@@ -116,13 +116,13 @@ contract Crowfunding {
 // faire un don
     function donate(uint _value, address _ProjectOwer) public {
         require (_value > 0, "tranfert impossible");
-        require (balance[msg.sender] > _value * 10**18, "somme insufisant");
+        require (balance[msg.sender] > _value, "somme insufisant");
         require (msg.sender != _ProjectOwer, "operation impossible");
         require (!ft_isDone(_ProjectOwer), "Delai expirer");
         givers[_ProjectOwer].push(Giver(payable(msg.sender), _value));
-        StructProject[_ProjectOwer].currentAmount += _value * 10**18;
-        projects[StructProject[_ProjectOwer].index].currentAmount += _value * 10**18;
-        balance[msg.sender] -= _value * 10**18;
+        StructProject[_ProjectOwer].currentAmount += _value;
+        projects[StructProject[_ProjectOwer].index].currentAmount += _value;
+        balance[msg.sender] -= _value;
         if (StructProject[_ProjectOwer].currentAmount >= StructProject[_ProjectOwer].Amount)
             putDone(_ProjectOwer);
         emit currentAmountEvent(StructProject[_ProjectOwer].currentAmount);
@@ -142,8 +142,8 @@ contract Crowfunding {
     function payOut(uint256 _value) external payable {
         require (balance[msg.sender] >= _value, "solde insufisant");
         require (_value > 0, "tranfert impossible");
-        balance[msg.sender] -= _value * 10**18;
-        payable(msg.sender).transfer(_value * 10**18);
+        balance[msg.sender] -= _value;
+        payable(msg.sender).transfer(_value);
         emit depositEvent(balance[msg.sender]);
     }
 }
