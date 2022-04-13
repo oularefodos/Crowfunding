@@ -1,3 +1,4 @@
+
 //SPDX-License-Identifier: Unlicense
 pragma solidity ^0.8.0;
 import "hardhat/console.sol";
@@ -24,7 +25,9 @@ contract Crowfunding {
         address payable giverAddr;
         uint256 amount;
     }
+
 // les evenemnts
+
     event ProjectEvent(
         string _name, 
         address _owner, 
@@ -32,7 +35,7 @@ contract Crowfunding {
         string _description, 
         uint256 _Amount, 
         uint256 _deadline);
-    
+
     event currentAmountEvent(uint256 _currentAmount);
 
     event isDoneEvent(bool isDone);
@@ -46,7 +49,6 @@ contract Crowfunding {
     mapping (address => Giver[]) public givers;
     mapping (address => uint256) private balance;
 
-
     constructor() {
         Owner = msg.sender;
     }
@@ -58,7 +60,6 @@ contract Crowfunding {
     function getBalance() public view returns(uint256) {
         return balance[msg.sender];
     }
-
 
     function getAllCompagn() external view returns (Project[] memory) {
         return projects;
@@ -78,7 +79,8 @@ contract Crowfunding {
             return (false);
         else
             return (true);
-     }
+    }
+
 //function pour la creation des projects
     function createCampaign(
         string memory _name,
